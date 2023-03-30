@@ -1,3 +1,5 @@
+//adding strcuture
+
 const Question = document.getElementById('question');
 const choices = Array.from(document.getElementsByClassName('choice-text'));
 
@@ -6,7 +8,7 @@ let acceptingAnswers = false;
 let score = 0;
 let questionCounter = 0;
 let availableQuesions = [];
-
+//adding objects
 let Questions = [
     {
       id: 0,
@@ -46,6 +48,7 @@ let Questions = [
         choice2: "css",
         choice3: "python",
         choice4: "HTML",
+        answer: 4
 
     },
     {
@@ -62,8 +65,8 @@ let Questions = [
 
 //CONSTANTS
 const correct = 1;
-const max_q = 3;
-
+const max_q = 5;
+//adding logic
 startGame = () => {
     questionCounter = 0;
     score = 0;
@@ -73,6 +76,7 @@ startGame = () => {
 
 getNewQuestion = () => {
     if (availableQuesions.length === 0 || questionCounter >= max_q) {
+        localStorage.setItem("mostRecentScore", score); 
         return window.location.assign('/end.html');
     }
     questionCounter++;
@@ -96,8 +100,34 @@ choices.forEach((choice) => {
         acceptingAnswers = false;
         const selectedChoice = i.target;
         const selectedAnswer = selectedChoice.dataset['number'];
-        getNewQuestion();
+
+        let classToApply = "incorrect"
+        if (selectedAnswer == currentQuestion.answer) {
+            classToApply = "correct";
+        }
+
+        selectedChoice.parentElement.classList.add(classToApply);
+
+        if(classToApply === "correct") {
+            incrementScore(correct);
+        }
+
+        setTimeout( () => {
+            selectedChoice.parentElement.classList.remove(classToApply);
+            getNewQuestion();   
+        }, 1000);
+        
     });
 });
+
+var finalScore = ""
+incrementScore = num => {
+    score += num;
+    finalScore.innerText = score;
+  };
+// function highscore(){
+// if(choices) == true || 
+// }
+
 
 startGame();
