@@ -1,15 +1,13 @@
-// this is where to add logic
-const question = document.getElementById("question");
-const choices = document.getElementsByClassName("choice-text");
-//console.log(choices);
+const Question = document.getElementById('question');
+const choices = Array.from(document.getElementsByClassName('choice-text'));
 
-let currentQuestions = {};
-let acceptingAnswers = true;
+let currentQuestion = {};
+let acceptingAnswers = false;
 let score = 0;
 let questionCounter = 0;
-let availableQuestions = [];
+let availableQuesions = [];
 
-const Questions = [
+let Questions = [
     {
       id: 0,
       question: "what does html stand for?",
@@ -62,23 +60,44 @@ const Questions = [
     }
   ];
 
-  const coorect = 1;
-  const max_q = 5;
+//CONSTANTS
+const correct = 1;
+const max_q = 3;
 
-  startGame = () => {
+startGame = () => {
     questionCounter = 0;
     score = 0;
-    availableQuestions = [...Questions];
-    console.log(availableQuestions);
+    availableQuesions = [...Questions];
     getNewQuestion();
-  }
-
+};
 
 getNewQuestion = () => {
+    if (availableQuesions.length === 0 || questionCounter >= max_q) {
+        return window.location.assign('/end.html');
+    }
     questionCounter++;
-    const questionIndex = Math.floor(Math.random() * availableQuestions.length);
-    currentQuestions = availableQuestions[questionIndex];
-    question.innerText = currentQuestions.question;
-}
+    const questionIndex = Math.floor(Math.random() * availableQuesions.length);
+    currentQuestion = availableQuesions[questionIndex];
+    question.innerText = currentQuestion.question;
+
+    choices.forEach((choice) => {
+        const number = choice.dataset['number'];
+        choice.innerText = currentQuestion['choice' + number];
+    });
+
+    availableQuesions.splice(questionIndex, 1);
+    acceptingAnswers = true;
+};
+
+choices.forEach((choice) => {
+    choice.addEventListener('click', (i) => {
+        if (!acceptingAnswers) return;
+
+        acceptingAnswers = false;
+        const selectedChoice = i.target;
+        const selectedAnswer = selectedChoice.dataset['number'];
+        getNewQuestion();
+    });
+});
 
 startGame();
